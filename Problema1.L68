@@ -1,0 +1,105 @@
+00001000 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.16.01
+Created On: 13/08/2023 19:47:47
+
+00000000                             1  *-----------------------------------------------------------
+00000000                             2  * Title      : Problema 1
+00000000                             3  * Written by : Ana Laura Torres Gonzalez
+00000000                             4  * Date       : 10/08/2023
+00000000                             5  * Description: Problema 1 del laboratorio 2
+00000000                             6  *-----------------------------------------------------------
+00000000  =0000000D                  7  CR  EQU       $0D
+00000000  =0000000A                  8  LF  EQU       $0A
+00000000                             9  
+00001000                            10  START: ORG    $1000
+00001000                            11  * Cargar dialogo en direccion de memoria
+00001000  43F9 0000108C             12      LEA DIALOG,A1
+00001006  343C 0000                 13      MOVE #0,D2 ;D2 es flag para contar caracteres
+0000100A  363C 0000                 14      MOVE #0,D3 ; D3 para contar espacios
+0000100E  383C 0000                 15      MOVE #0,D4 ; D3 para contar palabras
+00001012                            16  * Mostrar prompt
+00001012  303C 000E                 17      MOVE #14,D0
+00001016  4E4F                      18      TRAP #15
+00001018                            19  * Leer input de usuario
+00001018  303C 0002                 20      MOVE #2,D0 ;lee el input con tarea #2
+0000101C  4E4F                      21      TRAP #15
+0000101E  3049                      22      MOVE A1,A0
+00001020                            23  
+00001020                            24  LOOP:
+00001020  4A18                      25      TST.B   (A0)+        ; Carga el sig. caractetr
+00001022  6700 0006                 26      BEQ     INCREMENTSP     ;Ejecuta INCREMENTSP, para incrementar espacios
+00001026  6000 0010                 27      BRA     INCREMENT ;Ejecuta INCREMENT, para incrementar caracteres
+0000102A                            28  
+0000102A                            29  INCREMENTSP:
+0000102A  B0FC 0020                 30      CMP #$20,A0     ; Checa si caracter es espacio
+0000102E  5243                      31      ADDQ #1,D3        ; Suma 1 al contador  
+00001030  6000 000A                 32      BRA WORDSCOUNT    ; Ejecuta WORDSCOUNT
+00001034  6600 000A                 33      BNE FINISHED
+00001038                            34  INCREMENT:
+00001038  5242                      35      ADDQ #1,D2          ; Incrementa contador de caracteres
+0000103A  60E4                      36      BRA LOOP            ; Ejecuta Subrutina LOOP, el ciclo
+0000103C                            37  WORDSCOUNT:            ;Incrementa contador de palabras agregando 1 al total de esoacios 
+0000103C  3803                      38      MOVE D3,D4  
+0000103E  5244                      39      ADDQ #1,D4
+00001040                            40  FINISHED:              ; Ejecuta subrutinas para mostrar el numero de caracteres
+00001040  6000 000E                 41      BRA SHOW_CHARS
+00001044  6000 001E                 42      BRA SHOW_SPACES
+00001048  6000 002E                 43      BRA SHOW_WORDS
+0000104C                            44  
+0000104C  FFFF FFFF                 45      SIMHALT
+00001050                            46  SHOW_CHARS:
+00001050  43F9 000010A0             47      LEA CHARS,A1 ;Muestra texto caracteres
+00001056  303C 000E                 48      MOVE #14,D0
+0000105A  4E4F                      49      TRAP #15
+0000105C                            50  
+0000105C  3202                      51      MOVE D2,D1  ; Muestra num. de caracteres
+0000105E  303C 0003                 52      MOVE #3,D0
+00001062  4E4F                      53      TRAP #15
+00001064                            54  SHOW_SPACES:
+00001064  43F9 000010AF             55      LEA SPACES,A1 ;Muestra texto espacios
+0000106A  303C 000E                 56      MOVE #14,D0
+0000106E  4E4F                      57      TRAP #15
+00001070                            58  
+00001070  3203                      59      MOVE D3,D1 ; Muestra num. de espacios
+00001072  303C 0003                 60      MOVE #3,D0
+00001076  4E4F                      61      TRAP #15
+00001078                            62  SHOW_WORDS:
+00001078  43F9 000010BD             63      LEA WORDS,A1 ;Muestra texto palabras
+0000107E  303C 000E                 64      MOVE #14,D0
+00001082  4E4F                      65      TRAP #15
+00001084                            66  
+00001084  3204                      67      MOVE D4,D1  ; Muestra num. de palabras
+00001086  303C 0003                 68      MOVE #3,D0
+0000108A  4E4F                      69      TRAP #15
+0000108C                            70  
+0000108C                            71  *Mensajes
+0000108C= 4553 4352 4942 4...       72  DIALOG: DC.W    'ESCRIBE ALGO: ',CR,LF,0
+000010A0= 43 41 52 41 43 54 ...     73  CHARS: DC.B 'CARACTERES: ',0, LF,CR
+000010AF= 20 45 53 50 41 43 ...     74  SPACES: DC.B ' ESPACIOS: ',0, LF,CR
+000010BD= 20 50 41 4C 41 42 ...     75  WORDS: DC.B ' PALABRAS: ',0, LF,CR
+000010CB                            76  
+000010CB                            77  
+000010CB                            78          END     START
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+CHARS               10A0
+CR                  D
+DIALOG              108C
+FINISHED            1040
+INCREMENT           1038
+INCREMENTSP         102A
+LF                  A
+LOOP                1020
+SHOW_CHARS          1050
+SHOW_SPACES         1064
+SHOW_WORDS          1078
+SPACES              10AF
+START               1000
+WORDS               10BD
+WORDSCOUNT          103C
